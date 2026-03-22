@@ -28,27 +28,29 @@ vec4 complexToQuat(vec2 z){
 void main(){
     float res=3.7;
     vec2 coords= gl_FragCoord.xy;
-    coords.x-=100.;
-    // coords+= u_mouse;
+    
     vec2 p= (coords)/u_resolution*res-res/2.;
+    vec2 mouse=u_mouse/u_resolution*res-res/2.;
 
-    // vec2 z0=p;
-    vec2 z0=vec2(-1.1,0.23);
+    // vec2 z0=vec2(-1.1,0.23);
 
     vec2 zi=p;
     float iter=0.0;
-    for(int i=0; i<2000; i++){
+
+    //Polynomial Iteration
+    for(int i=0; i<20; i++){
         iter= float(i);
-        zi= zetSquare(zi)+z0;
-        if((dot(zi,zi) > 40.0) ){
-            
+        zi= zetSquare(zi)+mouse;
+        if((dot(zi,zi) > 2.0) ){
             break;
         }
     }
+
+
     vec4 quat = complexToQuat(zi);
     vec3 color= quat.wyz;
 
-    float fade = float(iter)/float(2000);
+    float fade = float(iter)/float(20);
 
     color = vec3(color.x*fade,color.y*fade,color.z);
     vec3 lengthColor = vec3(length(color));

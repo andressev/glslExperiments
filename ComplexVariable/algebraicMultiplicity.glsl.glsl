@@ -64,7 +64,7 @@ void main(){
     
 
 
-    gl_FragColor=vec4(polynomial.x, polynomial.y, phase/(2.0*3.14159), 1.0);
+    gl_FragColor=vec4(polynomial.x, polynomial.y, log(len), 1.0);
 }
 
 // color= r(p.x+p.y)+g()+b();

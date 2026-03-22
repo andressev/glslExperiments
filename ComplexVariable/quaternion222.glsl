@@ -75,7 +75,7 @@ vec4 oneOverQuaternion(vec4 q){
 
 void main(){
     //change resolution
-    float res=2.9;
+    float res=1.9;
     vec2 coords= gl_FragCoord.xy;
     // coords.x-=1000.0;
     // coords+= u_mouse;
@@ -99,11 +99,11 @@ void main(){
     vec4 b =  vec4(r*cos(u_time*0.1+1.57+u_mouse.x*0.01), r*sin(u_time*0.1+1.57+u_mouse.y*0.01), p);
     vec4 c= vec4(r*cos(u_time*0.1+3.14+u_mouse.x*0.01), r*sin(u_time*0.1+3.14+u_mouse.y*0.01), 0.0, 0.0);
     vec4 d= vec4(r*cos(u_time*0.1+4.71+u_mouse.x*0.01), r*sin(u_time*0.1+4.71+u_mouse.y*0.01), 0.0, 0.0);
-    vec4 e = complexToQuaternion(vec2(r*cos(u_time*0.1+5.71+u_mouse.x*0.01), r*sin(u_time*0.1+5.71+u_mouse.y*0.01)));
+    vec4 e = complexToQuaternion(vec2(r*cos(u_time*0.1+5.71), r*sin(u_time*0.1+5.71001)));
 
     
     //quaternioninc julia set iteration
-    for(int i=0; i<9; i++){
+    for(int i=0; i<30; i++){
 
         vec4 q1=q;
         vec4 q2= quaternionSquare(q);
@@ -111,19 +111,20 @@ void main(){
         vec4 q4= quaternionFourth(q);
         vec4 q5= quaternionFifth(q);
         
-        numerator= qMul(q3, c)+qMul(q2, d)+qMul(q, a)+q0;
-        denominator= oneOverQuaternion(q5+qMul(q4, e)+qMul(q3, c)+qMul(q2, d)+qMul(q, a)+q0);
-        q= qMul(numerator, denominator);
+        numerator= qMul(q2, a)+qMul(q, a)+q0;
+        // denominator= oneOverQuaternion(q5+qMul(q4, e)+qMul(q3, c)+qMul(q2, d)+qMul(q, a)+q0);
+        // q= qMul(numerator,vec4(1.1));
+        q= numerator;
       
         
     }
     
 
 
-    vec3 color= quatColor(q);
+    vec3 color= vec3(length(q.yzw));
 
 
-    gl_FragColor=vec4(color, 1.0);
+    gl_FragColor=vec4(q.yzw, 1.0);
 }
 
 // color= r(p.x+p.y)+g()+b();

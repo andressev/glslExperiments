@@ -64,6 +64,9 @@ vec4 quaternionCube(vec4 q){
 vec4 quaternionFourth(vec4 q){
     return qMul(quaternionCube(q), q);
 }
+vec4 quaternionFifth(vec4 q){
+    return qMul(quaternionFourth(q), q);
+}
 vec4 oneOverQuaternion(vec4 q){
     float len = length(q);
     return vec4(q.x/len/len, -q.y/len/len, -q.z/len/len, -q.w/len/len);
@@ -71,7 +74,7 @@ vec4 oneOverQuaternion(vec4 q){
 
 void main(){
     //change resolution
-    float res=8.9;
+    float res=10.1;
     vec2 coords= gl_FragCoord.xy;
     // coords.x-=1000.0;
     // coords+= u_mouse;
@@ -81,37 +84,51 @@ void main(){
   
 
     //change from complex to quaternion coords
-    vec4 q= vec4(p,complexMultiplication(u_mouse/u_resolution*res-res/2., p));
+    vec4 q= vec4(p,complexMultiplication(p, p));
 
-    vec4 q0= vec4(u_mouse/u_resolution*res-res/2., p);
+    // vec4 q0= vec4(u_mouse/u_resolution*res-res/2., p);
     vec4 numerator;
     vec4 denominator;
 
     // quaternioninc coefficients for polynomial
-    float r=7.1;
+    float r=1.1;
 
 
     vec4 a= vec4(r*cos(u_mouse.x*0.01), r*sin(u_mouse.y*0.01), 0.0, 0.0);
-    vec4 b =  vec4(r*cos(u_time*0.1+1.57+u_mouse.x*0.01), r*sin(u_time*0.1+1.57+u_mouse.y*0.01), p);
+    vec4 b = vec4(r*cos(u_time*0.1+1.57+u_mouse.x*0.01), r*sin(u_time*0.1+1.57+u_mouse.y*0.01), p);
     vec4 c= vec4(r*cos(u_time*0.1+3.14+u_mouse.x*0.01), r*sin(u_time*0.1+3.14+u_mouse.y*0.01), 0.0, 0.0);
     vec4 d= vec4(r*cos(u_time*0.1+4.71+u_mouse.x*0.01), r*sin(u_time*0.1+4.71+u_mouse.y*0.01), 0.0, 0.0);
-    
+    vec4 e= vec4(r*cos(u_time*0.1+6.28+u_mouse.x*0.01), r*sin(u_time*0.1+6.28+u_mouse.y*0.01), 0.0, 0.0);
+    float iter=0.0;
     //quaternioninc julia set iteration
-    for(int i=0; i<10; i++){
+    vec4 qi =q;
+    vec4 qStart= vec4(u_mouse/u_resolution*res-res/2., complexMultiplication(u_mouse/u_resolution*res-res/2., u_mouse/u_resolution*res-res/2.))+u_mouse.x/u_resolution.x;
+    for(int i=0; i<100; i++){
+        iter= float(i);
+        // numerator= qMul(quaternionFifth(q),e)+qMul(quaternionSquare(q), a)+qMul(quaternionCube(q), b);
+        // denominator= oneOverQuaternion(qMul(quaternionCube(q), b)+qMul(quaternionSquare(q)+q, c)+qMul(q, d)+q0);
+        qi= qMul(quaternionFourth(q),a)+quaternionCube(qi)+quaternionSquare(qi)+qStart;
+       
         
-        numerator= qMul(quaternionSquare(q), a)+qMul(quaternionCube(q), b);
-        denominator= oneOverQuaternion(quaternionFourth(q)+qMul(quaternionCube(q), b)+qMul(quaternionSquare(q), c)+qMul(q, d)+q0);
-        q= qMul(numerator, denominator);
+
+        if(length(qi) > 40.0){
+            
+            break;
+        }
       
         
     }
+
+    float fade = float(iter)/float(500);
     
+    vec3 color= vec3(length(qi.yzw)*fade);
 
 
-    vec3 color= quatColor(q);
+
+    // vec3 color= quatColor(q);
 
 
-    gl_FragColor=vec4(color, 1.0);
+    gl_FragColor=vec4(color*fade, 1.0);
 }
 
 // color= r(p.x+p.y)+g()+b();

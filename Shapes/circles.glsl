@@ -13,8 +13,8 @@ void main(){
     vec2 st= gl_FragCoord.xy/u_resolution.xy;
    
     float x= sin(u_time*st.x*st.x)*.1;
-    float a= 50.0*PI;
-    float c= u_time*0.1*PI;
+    // float a= 50.0*PI;
+    float c= 0.5;
     float b= sin(length(st-vec2(c))*100.)*PI;
 
     float pt=plot(st,cos(st.x*a + st.y*b + c));

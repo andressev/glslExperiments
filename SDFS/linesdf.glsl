@@ -34,19 +34,26 @@ void main(){
     vec2 A= vec2(0.0,0.0);
     vec2 B= vec2(5.,5.5);
 
-    vec2 B2= vec2(-5.,5.0);
+    vec2 C= vec2(3.2, 4.);
+    vec2 D= vec2(1.1, -1.5);
 
-    float sdf= min(lineSegmentSDF(A,B,p),lineSegmentSDF(A,B2,p));
-    sdf=min(sdf, lineSegmentSDF(A,-B,p));
-    sdf=min(sdf,lineSegmentSDF(A,-B2,p));
 
-    sdf=mod(sdf,cos(u_time*0.3));
+    p=p;
+    // vec2 B2= vec2(-5.,5.0);
+
+    float sdf1= lineSegmentSDF(A+cos(u_time),B,p);
+    float sdf2= lineSegmentSDF(C,D,p);
+
+    // sdf=min(sdf, lineSegmentSDF(A,-B,p));
+    // sdf=min(sdf,lineSegmentSDF(A,-B2,p));
+
+    // sdf=mod(sdf,cos(u_time*0.3));
 
     // sdf= 
 
     
     
-    float plt= smoothstep(sdf-0.01,0.,1.)-smoothstep(sdf+.01,0.,1.0);
+    float plt= min(sdf1,sdf2);
    
 
     

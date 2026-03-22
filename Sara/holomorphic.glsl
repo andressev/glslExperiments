@@ -40,7 +40,7 @@ vec2 complexExponential(vec2 z,float w){
 
 
 void main(){
-    float res=1.1;
+    float res=.1;
     vec2 coords= gl_FragCoord.xy;
     // coords.x-=100.;
     // coords+= u_mouse;
@@ -63,11 +63,10 @@ void main(){
     
 
     float iters=0.1;
-    for(int i=0; i<200; i++){
+    for(int i=0; i<20; i++){
         iters= float(i);
 
-        // numerator= cMul(a*vec2(i,0), polynomial1(zi))+ cMul(b*vec2(i,0), polynomial2(zi))+ c;
-        // denominator= oneOverZ(cMul(polynomial2(zi), polynomial1(zi))+cMul(vec2(i,0), polynomial2(zi)));
+       
         vec2 z1=zi;
         vec2 z2=cMul(z1,zi);
         vec2 z3=cMul(z2,zi);
@@ -86,11 +85,7 @@ void main(){
     len=length(zi);
     vec3 color= vec3(len);
     float fade = iters/200.;
-    // color.y= phase/(2.0*3.14159)+0.5;
-    // color.x= phase/(2.0*3.14159)+0.5;
-    
-    // vec3 color= hsv2rgb(vec3(phase/(2.0*3.14159265359)+0.5, 1.0, 1.0-exp(-len)));
-
+  
 
     gl_FragColor=vec4(color*fade, 1.);
 }

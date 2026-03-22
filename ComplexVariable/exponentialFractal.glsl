@@ -34,13 +34,13 @@ vec3 hsv2rgb(vec3 c)
     vec3 p = abs(fract(c.xxx + vec3(0,2,4)/3.)*6.-3.);
     return c.z * mix(vec3(1.), clamp(p-1.,0.,1.), c.y);
 }
-vec2 complexExponential(vec2 z,float w){
+vec2 cExp(vec2 z,float w){
     return exp(z.x)*(vec2(cos(z.y*w)+sin(z.y*w)));
 }
 
 
 void main(){
-    float res=1.1;
+    float res=3.1;
     vec2 coords= gl_FragCoord.xy;
     // coords.x-=100.;
     // coords+= u_mouse;
@@ -61,9 +61,10 @@ void main(){
     float len=0.0;
 
     
+    vec2 start=zi;
 
     float iters=0.1;
-    for(int i=0; i<200; i++){
+    for(int i=0; i<100; i++){
         iters= float(i);
 
         // numerator= cMul(a*vec2(i,0), polynomial1(zi))+ cMul(b*vec2(i,0), polynomial2(zi))+ c;
@@ -71,13 +72,15 @@ void main(){
         vec2 z1=zi;
         vec2 z2=cMul(z1,zi);
         vec2 z3=cMul(z2,zi);
-        vec2 z4=cMul(z3,zi);
-        vec2 z5= cMul(z4,zi);
-
-        numerator= cMul(vec2(1.),z4)+z2+z1+z0; 
-        denominator= oneOverZ(z5+z0);
-        zi= cMul(numerator,denominator);       
-        if(length(zi)>100.){
+        // vec2 z4=cMul(z3,zi);
+        // vec2 z5= cMul(z4,zi);
+        zi=cMul(cExp(zi,float(i)),z0)+z3;
+        // numerator= cMul(vec2(1.),z4)+z3+z2+z1+z0; 
+        // denominator= oneOverZ(z5+z0);
+        
+        zi;       
+        if(length(zi)>100000.){
+            
             break;
         }
     }
@@ -85,7 +88,7 @@ void main(){
     
     len=length(zi);
     vec3 color= vec3(len);
-    float fade = iters/200.;
+    float fade = iters/5000.;
     // color.y= phase/(2.0*3.14159)+0.5;
     // color.x= phase/(2.0*3.14159)+0.5;
     
